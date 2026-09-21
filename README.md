@@ -47,4 +47,8 @@ The prior conversation supplied the written blueprint but exposed no retrievable
 
 Final prompt: “Use case: photorealistic-natural. Asset type: wide website hero photograph for Proof Pursuit, a premium bourbon editorial website. A luxurious moody craft whiskey bar and distillery vault, warm amber lighting, unbranded rare bourbon bottles, oak aging barrels in the background, elegant crystal tumbler with amber liquid on rustic dark wooden table. Cinematic commercial photography, realistic glass, deep charcoal shadows, warm copper highlights. Wide landscape composition, main bottle and glass on right half with dark negative space on left for HTML headline. No text, no logos, no watermark.”
 
-No deployment, GitHub push, or live backend is included. Deployable static files are index.html, styles.css, app.js, data.js, and assets/; the local server is for preview only.
+No deployment or live backend is included. Deployable static files are index.html, styles.css, app.js, data.js, and assets/; the local server is for preview only.
+
+## Project origin
+
+First try at building a website using AI
