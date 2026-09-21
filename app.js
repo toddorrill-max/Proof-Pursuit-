@@ -1,4 +1,11 @@
 import {filterBottles,steps} from './data.js';
+import {brand} from './config.js';
+document.title = `${brand.name} — ${brand.headline}`;
+document.querySelector('meta[name="description"]').content = `${brand.name}: ${brand.description}`;
+document.querySelectorAll('[data-brand-name]').forEach(el => { el.textContent = brand.name; });
+document.querySelectorAll('[data-brand-tagline]').forEach(el => { el.textContent = brand.tagline; });
+document.querySelectorAll('[data-brand-mark]').forEach(el => { el.textContent = brand.mark; });
+document.querySelectorAll('[data-brand-home]').forEach(el => { el.setAttribute('aria-label', `${brand.name} home`); });
 const $ = selector => document.querySelector(selector);
 const filterForm=$('#filters');
 function renderBottles(){
