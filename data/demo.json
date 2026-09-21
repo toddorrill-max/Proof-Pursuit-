@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "mode": "demo",
+  "locations": [
+    {
+      "id": "columbus",
+      "metroId": "columbus-oh",
+      "city": "Columbus",
+      "state": "OH",
+      "zip": "43215",
+      "latitude": 39.9612,
+      "longitude": -82.9988,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "dublin",
+      "metroId": "columbus-oh",
+      "city": "Dublin",
+      "state": "OH",
+      "zip": "43017",
+      "latitude": 40.0992,
+      "longitude": -83.1141,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "westerville",
+      "metroId": "columbus-oh",
+      "city": "Westerville",
+      "state": "OH",
+      "zip": "43081",
+      "latitude": 40.1262,
+      "longitude": -82.9291,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ],
+  "retailers": [
+    {
+      "id": "demo-columbus",
+      "name": "Demo Columbus Retailer",
+      "address": "Fictional example — no visitable store",
+      "locationId": "columbus",
+      "phone": null,
+      "hours": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "demo-dublin",
+      "name": "Demo Dublin Retailer",
+      "address": "Fictional example — no visitable store",
+      "locationId": "dublin",
+      "phone": null,
+      "hours": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "demo-westerville",
+      "name": "Demo Westerville Retailer",
+      "address": "Fictional example — no visitable store",
+      "locationId": "westerville",
+      "phone": null,
+      "hours": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ],
+  "bottles": [
+    {
+      "id": "oak",
+      "name": "Demo Oak Selection",
+      "producer": "Demo Distillery",
+      "bottleType": "bourbon",
+      "proof": null,
+      "sizeMl": 750,
+      "msrp": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "reserve",
+      "name": "Demo Reserve",
+      "producer": "Demo Producer",
+      "bottleType": "bourbon",
+      "proof": null,
+      "sizeMl": 750,
+      "msrp": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "rye",
+      "name": "Demo Autumn Rye",
+      "producer": "Demo Producer",
+      "bottleType": "rye",
+      "proof": null,
+      "sizeMl": 750,
+      "msrp": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-0",
+      "type": "official-retailer",
+      "label": "Demo official-retailer source",
+      "url": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "source-1",
+      "type": "manual",
+      "label": "Demo manual source",
+      "url": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "source-2",
+      "type": "editor-reviewed-community",
+      "label": "Demo editor-reviewed-community source",
+      "url": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ],
+  "storePicks": [
+    {
+      "id": "pick-oak",
+      "name": "Demo Columbus Barrel Selection",
+      "bottleId": "oak",
+      "retailerId": "demo-columbus",
+      "barrelId": null,
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ],
+  "sightings": [
+    {
+      "id": "sighting-0",
+      "bottleId": "oak",
+      "retailerId": "demo-columbus",
+      "sourceId": "source-0",
+      "verifiedAt": "2026-09-20T18:00:00Z",
+      "confidence": "High",
+      "confidenceReason": "Fictional confidence example for testing; no real availability verification occurred.",
+      "releaseType": "store-pick",
+      "storePickId": "pick-oak",
+      "availability": "limited",
+      "estimatedQuantity": 6,
+      "purchaseConditions": [
+        "Demo condition: one bottle per adult"
+      ],
+      "status": "active",
+      "notes": "Sample only. Do not travel based on this record.",
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "sighting-1",
+      "bottleId": "reserve",
+      "retailerId": "demo-dublin",
+      "sourceId": "source-1",
+      "verifiedAt": "2026-09-19T12:00:00Z",
+      "confidence": "Medium",
+      "confidenceReason": "Fictional confidence example for testing; no real availability verification occurred.",
+      "releaseType": "rare-allocated",
+      "availability": "unknown",
+      "estimatedQuantity": null,
+      "purchaseConditions": [],
+      "status": "active",
+      "notes": "Sample only. Do not travel based on this record.",
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    },
+    {
+      "id": "sighting-2",
+      "bottleId": "rye",
+      "retailerId": "demo-westerville",
+      "sourceId": "source-2",
+      "verifiedAt": "2026-09-15T12:00:00Z",
+      "confidence": "Low",
+      "confidenceReason": "Fictional confidence example for testing; no real availability verification occurred.",
+      "releaseType": "new-release",
+      "availability": "unavailable",
+      "estimatedQuantity": null,
+      "purchaseConditions": [],
+      "status": "active",
+      "notes": "Sample only. Do not travel based on this record.",
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ],
+  "releaseEvents": [
+    {
+      "id": "release-rye",
+      "name": "Demo autumn release",
+      "bottleId": "rye",
+      "retailerId": "demo-westerville",
+      "sourceId": "source-2",
+      "startsAt": "2026-09-15T14:00:00Z",
+      "endsAt": null,
+      "notes": "Fictional event; not a scheduled public release.",
+      "demo": true,
+      "demoLabel": "FICTIONAL DEMO — not verified availability"
+    }
+  ]
+}
