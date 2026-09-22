@@ -17,12 +17,12 @@ function option(select,value,label){const opt=element('option',label);opt.value=
 communities.forEach(c=>{option($('#communities'),c.city,`${c.city} · ${c.zip}`);option($('#communities'),c.zip,`${c.city} center`);});
 confidenceLevels.forEach(c=>option($('#confidence-filter'),c,c));
 function card(row,options={}){return findingCard(row,{...options,selectedId,onSelect:select});}
-function select(id){
+function select(id,{pan=true}={}){
   selectedId=id;const row=rows.find(r=>r.id===id);
   $('#selected-finding').replaceChildren(row?card(row,{selected:true}):element('p','Select a map marker or a finding to inspect it here.','selection-hint'));
   document.querySelectorAll('#results .finding').forEach(el=>el.classList.toggle('selected',el.dataset.sighting===id));
   document.querySelectorAll('[data-select]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.select===id)));
-  map?.select(id);
+  map?.select(id,{pan});
 }
 function filters(){return {...Object.fromEntries(new FormData(form)),excludeStale:form.elements.excludeStale.checked};}
 function render({refit=true}={}){
@@ -35,7 +35,7 @@ function render({refit=true}={}){
   const active=Object.values(current).filter(Boolean).length;
   $('#active-filters').textContent=active?`· ${active} active`:'';
   $('#result-count').textContent=`${rows.length} ${data.mode==='demo'?'demo ':''}${rows.length===1?'finding':'findings'} · newest verification first${origin?` · distances from ${origin.label}`:' · set a location for distances'}`;
-  map?.setRows(rows,{refit});select(selectedId);
+  map?.setRows(rows,{refit});select(selectedId,{pan:refit});
 }
 function setView(view){$('#results-layout').dataset.view=view;$('#list-view').setAttribute('aria-pressed',String(view==='list'));$('#map-view').setAttribute('aria-pressed',String(view==='map'));if(view==='map')setTimeout(()=>map?.resize(),0);}
 $('#list-view').addEventListener('click',()=>setView('list'));
@@ -88,9 +88,9 @@ setInterval(()=>{
   if(!data)return;
   const active=document.activeElement,selectId=active?.dataset.select,markerId=active?.classList.contains('hunt-marker')?active.dataset.sighting:null;
   const findingId=active?.closest('.finding')?.dataset.sighting,href=active?.getAttribute('href'),scope=active?.closest('#selected-finding')?'#selected-finding':'#results';
-  // Popup choice controls are not replaced until the user leaves that short interaction.
-  if(active?.closest('.marker-choices'))return;
+  const popupFocused=Boolean(active?.closest('.marker-choices'));
   render({refit:false});
+  if(popupFocused&&!active.isConnected){$('#result-count').tabIndex=-1;$('#result-count').focus({preventScroll:true});}
   if(selectId||markerId||findingId){
     const target=href?[...document.querySelectorAll(`${scope} .finding a`)].find(el=>el.closest('.finding').dataset.sighting===findingId&&el.getAttribute('href')===href):[...document.querySelectorAll(selectId?'[data-select]':'.hunt-marker')].find(el=>(selectId?el.dataset.select:el.dataset.sighting)===(selectId||markerId));
     if(target)target.focus({preventScroll:true});else{$('#result-count').tabIndex=-1;$('#result-count').focus({preventScroll:true});}

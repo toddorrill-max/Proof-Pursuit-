@@ -13,7 +13,7 @@ function section(parent,titleText){const node=element('section',undefined,'conte
 function list(parent,items){const ul=element('ul');for(const item of items)ul.append(element('li',item));parent.append(ul);}
 function empty(parent,text){const box=element('div',undefined,'empty');box.append(element('p',text),link('Return to the hunting dashboard','index.html'));parent.append(box);}
 function demoNotice(){notice.textContent=(dataset?.mode||dataConfig.mode)==='demo'?'DEMO ONLY — Fictional retailers, bottles and availability. No real availability has been verified. Do not travel based on these examples.':'Manually maintained release intelligence — not live inventory. Check timestamps and call before traveling.';}
-function addFindings(parent,rows){if(!rows.length){empty(parent,'No active findings to show. Expired records are excluded; this is not a statement about store inventory.');return;}const grid=element('div',undefined,'finding-grid');rows.forEach((row,index)=>grid.append(findingCard(row,{ordinal:index+1})));parent.append(grid);}
+function addFindings(parent,rows,headingLevel=3){if(!rows.length){empty(parent,'No active findings to show. Expired records are excluded; this is not a statement about store inventory.');return;}const grid=element('div',undefined,'finding-grid');rows.forEach((row,index)=>grid.append(findingCard(row,{ordinal:index+1,headingLevel})));parent.append(grid);}
 
 function locationControls(){
   const panel=document.querySelector('#page-location');panel.hidden=false;
@@ -61,7 +61,7 @@ function renderData(){
     const store=section(content,'Retailer');store.append(link(row.retailer.name,route('retailer',row.retailerId)));paragraph(store,`${row.retailer.address} · ${row.location.city}, ${row.location.state} ${row.location.zip}`);
   }else{
     const type=page==='store-picks'?'store-pick':'rare-allocated',rows=all.filter(row=>row.releaseType===type);title(type==='store-pick'?'Store picks':'Rare and allocated releases');count.textContent=`${rows.length} ${dataset.mode==='demo'?'demo ':''}findings · newest verification first`;
-    paragraph(content,'Review the verification date, confidence and purchase conditions. Labels describe the release type, not a promise of availability.');addFindings(content,rows);
+    paragraph(content,'Review the verification date, confidence and purchase conditions. Labels describe the release type, not a promise of availability.');addFindings(content,rows,2);
   }
 }
 function renderMethodology(){
@@ -98,7 +98,14 @@ if(page==='methodology'||page==='about'){
   if(page==='methodology')renderMethodology();else renderAbout();content.setAttribute('aria-busy','false');
 }else{
   locationControls();document.querySelector('#retry-page').addEventListener('click',start);start();
-  // Refresh labels without replacing focused links; browser return also recomputes age.
-  setInterval(()=>{if(dataset&&!content.contains(document.activeElement))renderData();},60000);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&dataset&&!content.contains(document.activeElement))renderData();});
+  // Recompute age during keyboard use and restore the same link without scrolling.
+  function refresh(){
+    if(!dataset)return;
+    const active=document.activeElement,links=[...content.querySelectorAll('a')];
+    const index=links.indexOf(active),href=active?.getAttribute('href');
+    renderData();
+    if(index>=0){const next=[...content.querySelectorAll('a')];const target=next[index]?.getAttribute('href')===href?next[index]:next.find(a=>a.getAttribute('href')===href);target?.focus({preventScroll:true});}
+  }
+  setInterval(refresh,60000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 }
