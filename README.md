@@ -1,6 +1,6 @@
 # Proof Pursuit — Columbus hunting dashboard
 
-A mobile-first Columbus bourbon-hunting dashboard using owner-maintained JSON data. All bundled findings are fictional demos; production starts empty. The prior editorial website remains at `editorial.html`.
+A mobile-first Columbus bourbon-hunting dashboard using owner-maintained JSON data. All bundled findings are fictional demos; production starts empty. The editorial field guide is the homepage at `/` and `index.html`; bottle search and maps are at `dashboard.html`. `editorial.html` remains a compatible field-guide address.
 
 ## Run
 
@@ -54,7 +54,7 @@ Leaflet 1.9.4 is vendored in `vendor/` with its license. It supplies accessible 
 
 Run `npm run build` to validate the datasets and assemble only the static website files in `dist/`. Publish the contents of that folder using HTTPS. The build preserves the configured demo/production mode. Run the motion/package browser check after building.
 
-This branch has not been deployed. Publish only these static website files: `index.html`, `editorial.html`, `retailers.html`, `retailer.html`, `finding.html`, `store-picks.html`, `rare-releases.html`, `methodology.html`, `about.html`, `dashboard.js`, `dashboard.css`, `pages.js`, `pages.css`, `app.js`, `styles.css`, `data.js`, `config.js`, `lib/`, `data/`, `vendor/` and `assets/`. Do not publish repository uploads, tests, or development files. Use HTTPS for browser geolocation outside localhost. No server database or live inventory feed is included.
+This branch has not been deployed. Publish only these static website files: `index.html`, `dashboard.html`, `editorial.html`, `retailers.html`, `retailer.html`, `finding.html`, `store-picks.html`, `rare-releases.html`, `methodology.html`, `about.html`, `dashboard.js`, `dashboard.css`, `pages.js`, `pages.css`, `app.js`, `styles.css`, `data.js`, `config.js`, `lib/`, `data/`, `vendor/` and `assets/`. Do not publish repository uploads, tests, or development files. Use HTTPS for browser geolocation outside localhost. No server database or live inventory feed is included.
 
 ## Progress
 

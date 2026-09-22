@@ -7,7 +7,7 @@ for(const mode of ['demo','production']){
  const errors=validateDataset(JSON.parse(await readFile(path.join(root,'data',mode+'.json'))),{mode});
  if(errors.length)throw Error(mode+': '+errors.join('\n'));
 }
-const files=['index.html','editorial.html','retailers.html','retailer.html','finding.html','store-picks.html','rare-releases.html','methodology.html','about.html','dashboard.js','dashboard.css','pages.js','pages.css','app.js','styles.css','data.js','config.js','assets/mark.svg','assets/whiskey-hero.webp'];
+const files=['index.html','dashboard.html','editorial.html','retailers.html','retailer.html','finding.html','store-picks.html','rare-releases.html','methodology.html','about.html','dashboard.js','dashboard.css','pages.js','pages.css','app.js','styles.css','data.js','config.js','assets/mark.svg','assets/whiskey-hero.webp'];
 async function collect(folder){
  for(const entry of await readdir(path.join(root,folder),{withFileTypes:true})){
   const relative=folder+'/'+entry.name;

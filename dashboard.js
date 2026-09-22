@@ -7,7 +7,7 @@ import {feedback} from './lib/motion.js';
 
 const $=selector=>document.querySelector(selector);
 const form=$('#hunt-filters');
-installChrome('index');
+installChrome('dashboard');
 let data=null,origin=null,rows=[],selectedId=null,map=null,locationRequest=0,dataRequest=0;
 document.title=`${brand.name} — Columbus release intelligence`;
 document.querySelectorAll('[data-brand-name]').forEach(el=>el.textContent=brand.name);

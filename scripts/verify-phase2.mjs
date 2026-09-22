@@ -9,7 +9,7 @@ const errors=[];
 try{
  await mkdir('test-results',{recursive:true});
  const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));
- await page.goto(base);await page.locator('#results .finding').first().waitFor();
+ await page.goto(base+'/dashboard.html');await page.locator('#results .finding').first().waitFor();
  assert.equal(await page.locator('#results .finding').count(),3);
  assert.match(await page.locator('#demo-notice').innerText(),/FICTIONAL|Fictional/);
  assert.equal(await page.locator('#distance-filter').isDisabled(),true);
@@ -41,13 +41,13 @@ try{
  await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:'test-results/phase2-desktop.png',fullPage:true});
  await page.emulateMedia({reducedMotion:'reduce'});await page.evaluate(()=>document.documentElement.style.fontSize='200%');
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'200% text overflow');
- const failure=await browser.newPage({viewport:{width:390,height:844}});await failure.route('**/vendor/leaflet.js',route=>route.abort());await failure.goto(base);
+ const failure=await browser.newPage({viewport:{width:390,height:844}});await failure.route('**/vendor/leaflet.js',route=>route.abort());await failure.goto(base+'/dashboard.html');
  await failure.waitForFunction(()=>document.querySelector('#map-status').textContent.includes('Map unavailable'));assert.equal(await failure.locator('#list-panel').isVisible(),true);assert.equal(await failure.locator('#results .finding').count(),3);
- const badData=await browser.newPage();await badData.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:'{"broken":true}'}));await badData.goto(base);await badData.locator('#data-error').waitFor();assert.equal(await badData.locator('#results .finding').count(),0);
+ const badData=await browser.newPage();await badData.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:'{"broken":true}'}));await badData.goto(base+'/dashboard.html');await badData.locator('#data-error').waitFor();assert.equal(await badData.locator('#results .finding').count(),0);
  await badData.unroute('**/data/demo.json');await badData.locator('#retry-data').click();await badData.locator('#results .finding').first().waitFor();
- const emptyData=await browser.newPage();const demo=JSON.parse(await readFile('data/demo.json'));demo.sightings=[];await emptyData.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(demo)}));await emptyData.goto(base);await emptyData.locator('#empty').waitFor();assert.match(await emptyData.locator('#empty-message').innerText(),/No findings have been published/);
+ const emptyData=await browser.newPage();const demo=JSON.parse(await readFile('data/demo.json'));demo.sightings=[];await emptyData.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(demo)}));await emptyData.goto(base+'/dashboard.html');await emptyData.locator('#empty').waitFor();assert.match(await emptyData.locator('#empty-message').innerText(),/No findings have been published/);
  const grouped=await browser.newPage();const duplicates=JSON.parse(await readFile('data/demo.json'));duplicates.sightings[1].retailerId='demo-columbus';
- await grouped.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(duplicates)}));await grouped.goto(base);await grouped.getByRole('button',{name:'2 findings near Columbus'}).click();
+ await grouped.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(duplicates)}));await grouped.goto(base+'/dashboard.html');await grouped.getByRole('button',{name:'2 findings near Columbus'}).click();
  await grouped.locator('.marker-choices button').nth(1).click();assert.equal(await grouped.locator('#results .selected').getAttribute('data-sighting'),'sighting-1');
  assert.match(await grouped.locator('#map .is-selected').innerText(),/2 findings/);
  assert.deepEqual(errors,[]);console.log('PASS: search, distance, reset, map/card keyboard synchronization, geolocation success and denial, empty/error/retry, map failure, responsive widths, 200% text and reduced motion.');
