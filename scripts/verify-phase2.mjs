@@ -1,0 +1,54 @@
+import {createRequire} from 'node:module';
+import {mkdir,readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const require=createRequire(import.meta.url);
+const {chromium}=require(process.argv[2]||'playwright');
+const browser=await chromium.launch({channel:'msedge',headless:true});
+const base='http://localhost:5173';
+const errors=[];
+try{
+ await mkdir('test-results',{recursive:true});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base);await page.locator('#results .finding').first().waitFor();
+ assert.equal(await page.locator('#results .finding').count(),3);
+ assert.match(await page.locator('#demo-notice').innerText(),/FICTIONAL|Fictional/);
+ assert.equal(await page.locator('#distance-filter').isDisabled(),true);
+ await page.locator('#location-input').fill('43215');await page.getByRole('button',{name:'Set location',exact:true}).click();
+ assert.equal(await page.locator('#distance-filter').isDisabled(),false);
+ await page.locator('#distance-filter').selectOption('5');assert.equal(await page.locator('#results .finding').count(),1);
+ await page.locator('#hunt-filters button[type=reset]').click();await page.waitForFunction(()=>document.querySelectorAll('#results .finding').length===3);
+ await page.locator('#query').fill('  barrel selection  ');assert.equal(await page.locator('#results .finding').count(),1);
+ await page.locator('#query').fill('nothing matching');assert.equal(await page.locator('#empty').isVisible(),true);
+ await page.locator('#empty-reset').click();await page.waitForFunction(()=>document.querySelectorAll('#results .finding').length===3);
+ await page.locator('#map .hunt-marker').first().waitFor();
+ await page.locator('#map .hunt-marker').first().focus();await page.keyboard.press('Enter');
+ assert.equal(await page.locator('#results .selected').count(),1);assert.equal(await page.locator('#selected-finding .finding').count(),1);
+ await page.locator('#results [data-select="sighting-1"]').click();assert.equal(await page.locator('#map .is-selected').getAttribute('data-sighting'),'sighting-1');
+ await page.locator('#query').fill('autumn');assert.equal(await page.locator('#selected-finding .finding').count(),0);await page.locator('#query').fill('');
+ await page.locator('#location-input').fill('99999');await page.getByRole('button',{name:'Set location',exact:true}).click();assert.match(await page.locator('#location-status').innerText(),/not in the pilot/);
+ await page.evaluate(()=>Object.defineProperty(navigator,'geolocation',{configurable:true,value:{getCurrentPosition:(_success,fail)=>fail({code:1})}}));
+ await page.locator('#locate').click();assert.match(await page.locator('#location-status').innerText(),/permission denied/);
+ await page.evaluate(()=>Object.defineProperty(navigator,'geolocation',{configurable:true,value:{getCurrentPosition:success=>success({coords:{latitude:39.96,longitude:-83,accuracy:100}})}}));
+ await page.locator('#locate').click();assert.match(await page.locator('#location-status').innerText(),/Using browser location/);
+ await page.locator('#clear-location').click();assert.equal(await page.locator('#distance-filter').isDisabled(),true);
+ for(const width of [320,390,768,1024,1440]){
+  await page.setViewportSize({width,height:1000});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`Overflow at ${width}`);
+ }
+ await page.setViewportSize({width:390,height:844});await page.locator('#map-view').click();assert.equal(await page.locator('#map-panel').isVisible(),true);assert.equal(await page.locator('#list-panel').isVisible(),false);
+ await page.locator('#list-view').click();assert.equal(await page.locator('#list-panel').isVisible(),true);
+ await page.screenshot({path:'test-results/phase2-mobile.png',fullPage:true});
+ await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:'test-results/phase2-desktop.png',fullPage:true});
+ await page.emulateMedia({reducedMotion:'reduce'});await page.evaluate(()=>document.documentElement.style.fontSize='200%');
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'200% text overflow');
+ const failure=await browser.newPage({viewport:{width:390,height:844}});await failure.route('**/vendor/leaflet.js',route=>route.abort());await failure.goto(base);
+ await failure.waitForFunction(()=>document.querySelector('#map-status').textContent.includes('Map unavailable'));assert.equal(await failure.locator('#list-panel').isVisible(),true);assert.equal(await failure.locator('#results .finding').count(),3);
+ const badData=await browser.newPage();await badData.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:'{"broken":true}'}));await badData.goto(base);await badData.locator('#data-error').waitFor();assert.equal(await badData.locator('#results .finding').count(),0);
+ await badData.unroute('**/data/demo.json');await badData.locator('#retry-data').click();await badData.locator('#results .finding').first().waitFor();
+ const emptyData=await browser.newPage();const demo=JSON.parse(await readFile('data/demo.json'));demo.sightings=[];await emptyData.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(demo)}));await emptyData.goto(base);await emptyData.locator('#empty').waitFor();assert.match(await emptyData.locator('#empty-message').innerText(),/No findings have been published/);
+ const grouped=await browser.newPage();const duplicates=JSON.parse(await readFile('data/demo.json'));duplicates.sightings[1].retailerId='demo-columbus';
+ await grouped.route('**/data/demo.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(duplicates)}));await grouped.goto(base);await grouped.getByRole('button',{name:'2 findings near Columbus'}).click();
+ await grouped.locator('.marker-choices button').nth(1).click();assert.equal(await grouped.locator('#results .selected').getAttribute('data-sighting'),'sighting-1');
+ assert.match(await grouped.locator('#map .is-selected').innerText(),/2 findings/);
+ assert.deepEqual(errors,[]);console.log('PASS: search, distance, reset, map/card keyboard synchronization, geolocation success and denial, empty/error/retry, map failure, responsive widths, 200% text and reduced motion.');
+}finally{await browser.close();}

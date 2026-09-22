@@ -9,3 +9,7 @@ export const brand = Object.freeze({
 export const dataConfig = Object.freeze({ mode: 'demo' });
 export const freshnessRules = Object.freeze({ freshHours: 24, agingHours: 72 });
 export const confidenceLevels = Object.freeze(['High', 'Medium', 'Low']);
+export const mapConfig = Object.freeze({
+  tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
