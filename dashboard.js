@@ -1,12 +1,13 @@
+import {findingCard, installChrome} from './lib/view.js';
 import { brand, freshnessRules, confidenceLevels } from './config.js';
 import { loadDataset } from './lib/data-model.js';
-import { communities, resolveLocation, joinSightings, filterSightings, directionsLink, releaseLabels, sourceLabels, availabilityLabels } from './lib/search.js';
+import { communities, resolveLocation, joinSightings, filterSightings } from './lib/search.js';
 import { createHuntMap } from './lib/hunt-map.js';
 
 const $=selector=>document.querySelector(selector);
 const form=$('#hunt-filters');
+installChrome('index');
 let data=null,origin=null,rows=[],selectedId=null,map=null,locationRequest=0,dataRequest=0;
-const timestamp=new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/New_York'});
 document.title=`${brand.name} — Columbus release intelligence`;
 document.querySelectorAll('[data-brand-name]').forEach(el=>el.textContent=brand.name);
 document.querySelectorAll('[data-brand-mark]').forEach(el=>el.textContent=brand.mark);
@@ -15,34 +16,7 @@ function element(tag,text,className){const el=document.createElement(tag);if(tex
 function option(select,value,label){const opt=element('option',label);opt.value=value;select.append(opt);}
 communities.forEach(c=>{option($('#communities'),c.city,`${c.city} · ${c.zip}`);option($('#communities'),c.zip,`${c.city} center`);});
 confidenceLevels.forEach(c=>option($('#confidence-filter'),c,c));
-function field(list,title,value){const group=element('div');group.append(element('dt',title),element('dd',value));list.append(group);}
-function card(row,{selected=false,ordinal=0}={}){
-  const article=element('article',undefined,`finding${row.freshness==='Stale'?' stale':''}`);article.dataset.sighting=row.id;
-  if(!selected)article.tabIndex=-1;
-  const top=element('div',undefined,'card-top');
-  top.append(element('span',`${ordinal?`${ordinal} / `:''}${releaseLabels[row.releaseType]}`,'release-type'),element('span',row.freshness,'status-badge'));article.append(top);
-  if(row.demo)article.append(element('p','FICTIONAL DEMO · Not verified availability','demo-label'));
-  article.append(element('h3',row.pick?.name||row.bottle.name),element('p',`${row.bottle.name} · ${row.bottle.producer}`,'producer'),element('p',`${row.retailer.name} · ${row.location.city}`,'retailer'));
-  const dl=element('dl',undefined,'facts');
-  const timeLabel=`${timestamp.format(new Date(row.verifiedAt))} ET`;
-  field(dl,row.demo?'Demo verification timestamp':'Last verified',timeLabel);
-  field(dl,'Distance',row.distance===null?'Choose a location to see distance':`${row.approximate?'Approx. ':''}${row.distance.toFixed(1)} miles · straight-line${row.approximate?' to community center':''}`);
-  field(dl,'Source',`${row.demo?'Demo · ':''}${sourceLabels[row.source.type]}`);
-  field(dl,'Confidence',`${row.confidence} — ${row.confidenceReason}`);
-  field(dl,'Estimated quantity',row.quantityLabel);
-  field(dl,'Availability',`${row.demo?'Demo · ':''}${availabilityLabels[row.availability]}`);
-  field(dl,'Purchase conditions',row.conditionsLabel);
-  article.append(dl);
-  if(row.freshness==='Stale'||row.freshness==='Aging')article.append(element('p',`${row.freshness} information — reconfirm before making plans.`,'age-warning'));
-  if(row.notes)article.append(element('p',row.notes,'notes'));
-  const actions=element('div',undefined,'card-actions');
-  const directions=directionsLink(row),link=element('a',directions.label);link.href=directions.url;link.target='_blank';link.rel='noopener';actions.append(link);
-  if(row.source.url){const source=element('a','View source');source.href=row.source.url;source.target='_blank';source.rel='noopener';actions.append(source);}
-  if(row.retailer.phone){const phone=element('a',`Call ${row.retailer.phone}`);phone.href=`tel:${row.retailer.phone.replace(/[^+\d]/g,'')}`;actions.append(phone);}
-  else actions.append(element('span',row.demo?'No real retailer phone (demo)':'Phone not supplied — confirm contact details','notes'));
-  if(!selected){const button=element('button','Select finding','secondary select-finding');button.type='button';button.dataset.select=row.id;button.setAttribute('aria-pressed',String(selectedId===row.id));button.addEventListener('click',()=>select(row.id));actions.append(button);}
-  article.append(actions,element('p','Availability can change quickly—call before traveling.','call-reminder'));return article;
-}
+function card(row,options={}){return findingCard(row,{...options,selectedId,onSelect:select});}
 function select(id){
   selectedId=id;const row=rows.find(r=>r.id===id);
   $('#selected-finding').replaceChildren(row?card(row,{selected:true}):element('p','Select a map marker or a finding to inspect it here.','selection-hint'));

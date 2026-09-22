@@ -44,3 +44,9 @@ test('data requests time out instead of leaving the UI loading forever',async()=
   const result=await loadDataset({timeoutMs:5,fetcher:()=>new Promise(()=>{})});
   assert.equal(result.ok,false);assert.match(result.errors[0],/timed out/);
 });
+test('reject impossible calendar dates, unsafe links and malformed optional contact fields',()=>{
+  for(const mutate of [d=>d.sightings[0].verifiedAt='2026-02-30T12:00:00Z',d=>d.retailers[0].hours=42,d=>d.retailers[0].phone='call us',d=>d.retailers[0].url='javascript:alert(1)']){
+    const copy=structuredClone(demo);mutate(copy);assert.ok(validateDataset(copy,{now}).length);
+  }
+  assert.equal(freshness('2024-02-29T12:00:00Z',now),'Stale');
+});
