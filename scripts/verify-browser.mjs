@@ -7,7 +7,7 @@ const browser=await chromium.launch({channel:'msedge',headless:true});
 try {
   const page=await browser.newPage({viewport:{width:1440,height:1000}});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('http://localhost:5173', {waitUntil:'domcontentloaded'});
+  await page.goto(process.argv[3] || 'http://localhost:5173/editorial.html', {waitUntil:'domcontentloaded'});
   await page.locator('#bottles tr').first().waitFor();
   assert.equal(await page.locator('#bottles tr').count(),8);
   await page.locator('#search').fill('weller');

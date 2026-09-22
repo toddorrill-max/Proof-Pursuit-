@@ -1,6 +1,6 @@
 # Phase 1 owner guide
 
-The existing dependency-free HTML/JavaScript homepage is preserved. The new hunting dataset is a foundation for Phase 2; it does not yet power the existing price shortlist or create a map. No new dependencies, accounts, integrations, or deployment are included.
+The Phase 1 schema below now powers the Phase 2 hunting dashboard. See [Phase 2](PHASE-2.md) for search and map behavior. The legacy editorial price shortlist is preserved separately at editorial.html. No accounts, inventory integrations, or deployment are included.
 
 ## Files and settings
 
@@ -39,4 +39,4 @@ Additional metros can use a new metroId and location records without changing th
 
 ## Remaining phases
 
-Phase 2 connects this model to nearby search, a Columbus map, filters, and activity. Phase 3 adds details, methodology and full owner-facing pages. Phase 4 performs end-to-end QA. Existing editorial pricing and the local journal are legacy features, not part of this dataset. The mode switch affects the new loader only until Phase 2 replaces the legacy shortlist.
+Phase 2 connects this model to nearby search, a Columbus map, filters, and activity on the home page. Phase 3 adds details, methodology and full owner-facing pages. Phase 4 performs end-to-end QA. Existing editorial pricing and the local journal are legacy features on editorial.html, not part of this dataset. The mode switch affects the dashboard loader; the legacy editorial examples remain explicitly illustrative.

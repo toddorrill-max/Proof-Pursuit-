@@ -1,61 +1,54 @@
-# Proof Pursuit — The Bourbon Hunter
+# Proof Pursuit — Columbus hunting dashboard
 
-A responsive editorial bourbon homepage built with semantic HTML, CSS, and native JavaScript modules. The GitHub repository was empty at the start; this implementation adds no production dependencies or build step.
+A mobile-first Columbus bourbon-hunting dashboard using owner-maintained JSON data. All bundled findings are fictional demos; production starts empty. The prior editorial website remains at `editorial.html`.
 
-## Preview
+## Run
 
-With Node.js 20 or newer installed, open a terminal in this directory:
+Use Node.js 20 or newer:
 
 ```sh
 npm run dev
 ```
 
-Open http://localhost:5173. Alternatively run `node server.mjs`. The server binds only to your computer. Set `PORT` to change the default port. Serve through HTTP; JavaScript modules do not work by opening index.html directly from disk.
+Open http://localhost:5173. No package installation or build step is required. JavaScript modules and JSON loading require HTTP; do not open index.html directly from disk. The server binds to localhost and accepts an optional PORT environment variable.
 
-## Files
-
-- `index.html`: homepage sections, accessible forms, navigation, guides, and journal dialog.
-- `styles.css`: charcoal/amber design, typography, responsive layouts, keyboard focus and reduced-motion support.
-- `data.js`: illustrative bottle dataset, filter logic, and Ohio guide content.
-- `app.js`: filter controls, tier shortcuts, mobile navigation, guide steps, and local tasting-note storage.
-- `assets/whiskey-hero.webp`: optimized generated photography used by hero and barrel feature.
-- `assets/whiskey-hero.png`: original generated image.
-- `assets/mark.svg`: vector favicon.
-- `server.mjs`: dependency-free local preview server.
-- `tests/filters.test.js`: filtering behavior tests.
-- `scripts/verify-browser.mjs`: optional Playwright browser checks; requires Playwright and Microsoft Edge.
-
-## Checks
+## Check
 
 ```sh
 npm test
-# With the local server running and Playwright available:
+node scripts/validate-data.mjs
+# While the local server runs, with Playwright and Microsoft Edge available:
+node scripts/verify-phase2.mjs
 node scripts/verify-browser.mjs
 ```
 
-The browser script can also take an absolute Playwright module path. It checks filters, empty results, reset, tier shortcuts, Ohio steps, journal persistence, images, mobile navigation, overflow at 320/390/768/1024/1440 px, and browser errors. Screenshots are saved under ignored `test-results/`.
+Browser scripts accept an optional absolute Playwright module path as the first argument. The editorial browser script accepts its page URL as the second argument and defaults to `/editorial.html`. Tests use simulated browser location outcomes; permission prompts depend on the user's browser. Screenshots are written to ignored `test-results/`.
 
-## Content boundaries
+## Edit and maintain
 
-Prices and trends are clearly labeled illustrative examples, not current valuations. The market strip contains editorial guidance rather than a simulated live feed. The Ohio map is illustrative, with no inventory integration. The site links to official [Ohio Liquor](https://www.ohlq.com/) and [bottle lottery information](https://www.ohlq.com/ohio-bottle-lotteries). Unverified inventory schedules, precise scarcity thresholds, and current club-pick claims from the blueprint were not repeated as established facts. Use a dated, attributed data source before adding live pricing or inventory claims.
+- `config.js`: centralized brand name, tagline, metadata, map provider, dataset mode, confidence labels and freshness thresholds.
+- `data/demo.json` / `data/production.json`: separate demo and real datasets.
+- [Data schema and owner guide](docs/DATA-MAINTENANCE.md): add, edit, expire and remove records.
+- [Phase 2 guide](docs/PHASE-2.md): functionality, location approximation, map policy, validation and remaining limitations.
+- `dashboard.js`, `dashboard.css`, `lib/search.js`, `lib/hunt-map.js`: dashboard and map implementation.
+- `lib/data-model.js`: safe loading, validation and freshness calculations.
+- `editorial.html`, `app.js`, `styles.css`, `data.js`: preserved legacy editorial experience, including illustrative prices and a browser-local journal.
 
-The journal saves one editable note locally in the browser; it has no account, cloud synchronization, or server submission. Storage failures produce a visible message. Google Fonts are optional external requests, with Georgia/Arial fallbacks. All imagery is local.
+Fresh is up to 24 hours old, Aging is over 24 through 72 hours, and Stale is over 72 hours. Fixed demo timestamps age naturally. Source confidence is editorial judgment, not an availability guarantee. Demo directions go only to community centers. Production directions use real retailer addresses; optional verified retailer coordinates improve pins and distance estimates.
 
-## Image provenance
+## Map dependency
 
-The prior conversation supplied the written blueprint but exposed no retrievable mockup or image attachments. Fresh photography was generated using the built-in image-generation tool, then converted to WebP for delivery. Final files: `assets/whiskey-hero.png` and `assets/whiskey-hero.webp`.
+Leaflet 1.9.4 is vendored in `vendor/` with its license. It supplies accessible map controls without adding a build tool. Tiles are requested directly from OpenStreetMap with attribution and normal browser caching. See the [tile policy](https://operations.osmfoundation.org/policies/tiles/) before production hosting. All findings remain usable in list view if map code or tiles fail. No paid API key is required.
 
-Final prompt: “Use case: photorealistic-natural. Asset type: wide website hero photograph for Proof Pursuit, a premium bourbon editorial website. A luxurious moody craft whiskey bar and distillery vault, warm amber lighting, unbranded rare bourbon bottles, oak aging barrels in the background, elegant crystal tumbler with amber liquid on rustic dark wooden table. Cinematic commercial photography, realistic glass, deep charcoal shadows, warm copper highlights. Wide landscape composition, main bottle and glass on right half with dark negative space on left for HTML headline. No text, no logos, no watermark.”
+## Deployment
 
-No deployment or live backend is included. Deployable static files are index.html, styles.css, app.js, data.js, config.js, lib/, data/, and assets/; the local server is for preview only.
+This branch has not been deployed. Publish only these static website files: `index.html`, `editorial.html`, `dashboard.js`, `dashboard.css`, `app.js`, `styles.css`, `data.js`, `config.js`, `lib/`, `data/`, `vendor/` and `assets/`. Do not publish repository uploads, tests, or development files. Use HTTPS for browser geolocation outside localhost. No server database or live inventory feed is included.
 
-## Project origin
+## Progress
 
-First try at building a website using AI
+Phase 1 provides the validated data foundation. Phase 2 connects it to nearby search, an interactive map, filters and recent activity. Retailer and sighting details, directory and full methodology/About pages remain Phase 3; comprehensive QA and visual/motion work remain later phases. Accounts, alerts, public submissions, database integration, additional metros and optional price intelligence remain deferred.
 
-## Phase 1 — hunting data foundation
+## Existing image provenance
 
-Brand configuration is centralized in `config.js`. Human-editable `data/demo.json` and `data/production.json` are separate; production starts empty. See [the data schema and owner guide](docs/DATA-MAINTENANCE.md) for fields, validation, freshness rules and editing instructions. Run `node scripts/validate-data.mjs` and `npm test` after data changes. No build step or additional dependency is required.
-
-The existing editorial homepage is preserved. Nearby results, map integration and supporting views remain Phases 2–3; the Phase 1 dataset is not yet used by the legacy price shortlist. This checkpoint has not been deployed.
+The editorial page uses the previously generated, unbranded whiskey-bar photograph in `assets/whiskey-hero.webp` (original PNG retained). No new imagery was generated for Phase 2. The dashboard uses no decorative image downloads or external fonts.
 

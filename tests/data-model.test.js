@@ -40,3 +40,7 @@ test('loader handles success, network, HTTP, JSON, and validation failures with 
     const result=await loadDataset({mode:'production',now,fetcher}); assert.equal(result.ok,false); assert.equal(result.data,null);
   }
 });
+test('data requests time out instead of leaving the UI loading forever',async()=>{
+  const result=await loadDataset({timeoutMs:5,fetcher:()=>new Promise(()=>{})});
+  assert.equal(result.ok,false);assert.match(result.errors[0],/timed out/);
+});

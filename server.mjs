@@ -3,12 +3,12 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 const root = fileURLToPath(new URL('.', import.meta.url));
-const types = {'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'};
+const types = {'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'};
 http.createServer(async (req,res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
     const file = path.resolve(root, '.' + (pathname === '/' ? '/index.html' : pathname));
-    if (!file.startsWith(root) || !['.html','.css','.js','.webp','.png','.svg'].includes(path.extname(file))) { res.writeHead(404).end('Not found'); return; }
+    if (!file.startsWith(root) || !Object.hasOwn(types,path.extname(file))) { res.writeHead(404).end('Not found'); return; }
     const data = await readFile(file);
     res.writeHead(200, {'Content-Type':types[path.extname(file)],'X-Content-Type-Options':'nosniff'}).end(data);
   } catch { res.writeHead(404).end('Not found'); }
