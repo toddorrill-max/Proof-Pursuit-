@@ -8,3 +8,9 @@
 
 /* Shared navigation across dashboard and supporting pages. */
 .site-header{flex-wrap:wrap;padding-top:1rem;padding-bottom:1rem}.site-header nav{flex-wrap:wrap;gap:.4rem 1.2rem}.site-header nav a,.site-header nav a:last-child{display:flex;min-height:44px}.site-header nav a[aria-current=page]{font-weight:700;text-decoration:underline}.footer-links{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1rem}.footer-links a{min-height:44px;display:flex;align-items:center}.finding h3 a{color:inherit;text-decoration-thickness:1px}
+
+/* Keep controls usable on narrow screens with enlarged text. */
+.search-row>label,.filter-grid>label{min-width:0}
+.results-heading,.map-heading{flex-wrap:wrap}
+.skip{top:0;transform:translateY(-110%)}.skip:focus{top:1rem;transform:none}
+@media(max-width:600px){.search-row{grid-template-columns:minmax(0,1fr)}.filter-grid{grid-template-columns:minmax(0,1fr)}}
