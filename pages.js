@@ -11,7 +11,7 @@ function title(value){heading.textContent=value;document.title=`${value} — ${b
 function paragraph(parent,text){parent.append(element('p',text));}
 function section(parent,titleText){const node=element('section',undefined,'content-section');node.append(element('h2',titleText));parent.append(node);return node;}
 function list(parent,items){const ul=element('ul');for(const item of items)ul.append(element('li',item));parent.append(ul);}
-function empty(parent,text){const box=element('div',undefined,'empty');box.append(element('p',text),link('Return to the hunting dashboard','index.html'));parent.append(box);}
+function empty(parent,text){const box=element('div',undefined,'empty');box.append(element('p',text),link('Return to the hunting dashboard','dashboard.html'));parent.append(box);}
 function demoNotice(){notice.textContent=(dataset?.mode||dataConfig.mode)==='demo'?'DEMO ONLY — Fictional retailers, bottles and availability. No real availability has been verified. Do not travel based on these examples.':'Manually maintained release intelligence — not live inventory. Check timestamps and call before traveling.';}
 function addFindings(parent,rows,headingLevel=3){if(!rows.length){empty(parent,'No active findings to show. Expired records are excluded; this is not a statement about store inventory.');return;}const grid=element('div',undefined,'finding-grid');rows.forEach((row,index)=>grid.append(findingCard(row,{ordinal:index+1,headingLevel})));parent.append(grid);}
 
@@ -52,7 +52,7 @@ function renderData(){
     const row=joinSightings(dataset,origin,Date.now(),{includeExpired:true}).find(r=>r.id===id);
     if(!row){title('Finding not found');count.textContent='';empty(content,'This finding link is missing or the record has been removed. No availability can be inferred.');return;}
     title(row.bottle.name);count.textContent=row.status==='expired'?'Expired record · reference only':`${row.demo?'Demo finding':'Finding'} · ${row.freshness}`;
-    content.append(link('← Hunting dashboard','index.html'),findingCard(row,{detail:true}));
+    content.append(link('← Hunting dashboard','dashboard.html'),findingCard(row,{detail:true}));
     const bottle=section(content,'Bottle and release details'),dl=element('dl',undefined,'facts');
     field(dl,'Bottle',row.bottle.name);field(dl,'Producer / distillery',row.bottle.producer);field(dl,'Bottle type',row.bottle.bottleType);field(dl,'Proof',row.bottle.proof==null?'Proof unknown':String(row.bottle.proof));field(dl,'Bottle size',row.bottle.sizeMl==null?'Size unknown':`${row.bottle.sizeMl} mL`);if(row.pick)field(dl,'Barrel identifier',row.pick.barrelId||'Barrel identifier unknown');bottle.append(dl);
     const source=section(content,'Source and verification');paragraph(source,`${row.demo?'Demo source: ':''}${row.source.label}`);paragraph(source,`${sourceLabels[row.source.type]}. Confidence: ${row.confidence}. ${row.confidenceReason}`);
@@ -77,7 +77,7 @@ function renderMethodology(){
   list(confidence,['High: strong, directly attributable evidence for the specific claim.','Medium: useful evidence with limitations, such as incomplete details or an indirect report.','Low: tentative evidence that needs additional checking.']);paragraph(confidence,'A high-confidence record can still be stale. Even fresh, high-confidence information can change before you arrive.');
   const quantity=section(content,'Quantities and purchase conditions');paragraph(quantity,'Estimated quantities describe the report at verification time, not a reservation. “Quantity unknown” means no number was supplied; zero is a reported count of zero. Review per-person limits, loyalty requirements, lottery eligibility or other conditions when supplied. “Purchase conditions unknown” means you need to ask the retailer.');
   const location=section(content,'Distances, pins and directions');paragraph(location,'Distances are straight-line estimates, not driving distances. The ZIP/community lookup uses approximate community centers. Without verified retailer coordinates, the pin and distance refer to that community center. Demo retailers are fictional, and their directions explicitly go to the community center rather than a store.');
-  const responsible=section(content,'Before traveling');list(responsible,['Confirm the bottle, release and location with the retailer.','Ask about availability, hours and purchase conditions.','Respect retailer rules and staff. This site offers information, not sales, reservations, shipping or resale.']);responsible.append(link('Findings dashboard','index.html'));
+  const responsible=section(content,'Before traveling');list(responsible,['Confirm the bottle, release and location with the retailer.','Ask about availability, hours and purchase conditions.','Respect retailer rules and staff. This site offers information, not sales, reservations, shipping or resale.']);responsible.append(link('Findings dashboard','dashboard.html'));
 }
 function renderAbout(){
   title(`About ${brand.name}`);content.classList.add('reading');

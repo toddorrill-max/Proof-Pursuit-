@@ -51,6 +51,6 @@ try{
  // The methodology remains available even when finding data cannot load.
  await page.route('**/data/demo.json',route=>route.abort());await page.goto(`${base}/methodology.html`);await page.getByRole('heading',{name:'What source labels mean'}).waitFor();
  await page.unroute('**/data/demo.json');
- await page.goto(base);await page.locator('#results .finding').first().waitFor();await page.locator('#results .finding h3 a').first().focus();await page.keyboard.press('Enter');await page.waitForURL('**/finding.html?id=sighting-0');
+ await page.goto(base+'/dashboard.html');await page.locator('#results .finding').first().waitFor();await page.locator('#results .finding h3 a').first().focus();await page.keyboard.press('Enter');await page.waitForURL('**/finding.html?id=sighting-0');
  assert.deepEqual(errors,[]);console.log(`PASS: seven pages, ${hrefs.size} internal links, directory/detail navigation, trust fields, location distances, release collections, expired/missing records, source/phone links, error/retry, offline methodology, keyboard navigation, four widths and 200% text.`);
 }finally{await browser.close();}

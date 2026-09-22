@@ -6,7 +6,7 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.clock.install({time:new Date('2026-09-21T17:59:30Z')});
- await page.goto(base);await page.locator('#home-picks .finding').waitFor();
+ await page.goto(base+'/dashboard.html');await page.locator('#home-picks .finding').waitFor();
  assert.equal(await page.locator('#home-rare .finding').count(),1);
  assert.equal(await page.locator('#home-retailers .area-link').count(),3);
  for(const id of ['home-picks','home-rare']){

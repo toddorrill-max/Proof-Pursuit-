@@ -4,7 +4,7 @@ const require=createRequire(import.meta.url),{chromium}=require(process.argv[2]|
 const browser=await chromium.launch({channel:'msedge',headless:true}),base='http://localhost:5173';
 try{
  const page=await browser.newPage({viewport:{width:390,height:844}});
- await page.goto(base);await page.locator('#results .finding').first().waitFor();
+ await page.goto(base+'/dashboard.html');await page.locator('#results .finding').first().waitFor();
  const client=await page.context().newCDPSession(page);
  await client.send('Emulation.setCPUThrottlingRate',{rate:4});
  const change=()=>page.evaluate(async()=>{
@@ -26,7 +26,7 @@ try{
  const packaged=await browser.newPage();const failures=[];
  packaged.on('pageerror',error=>failures.push(error.message));
  packaged.on('response',response=>{if(response.url().startsWith(base+'/dist/')&&response.status()>=400)failures.push(response.url());});
- await packaged.goto(base+'/dist/index.html');await packaged.locator('#home-picks .finding').waitFor();
+ await packaged.goto(base+'/dist/dashboard.html');await packaged.locator('#home-picks .finding').waitFor();
  await packaged.locator('#results h3 a').first().click();await packaged.locator('#page-content .finding').waitFor();
  assert.deepEqual(failures,[]);
  console.log('PASS: brief nonlooping feedback, immediate filters, focus preservation, reduced-motion cancellation, mobile switching at 4x CPU slowdown, packaged dashboard and detail page.');
