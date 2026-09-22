@@ -32,3 +32,9 @@ test('expired findings excluded, production directions use addresses, demo never
  const production={...rows[0],demo:false,retailer:{...rows[0].retailer,address:'123 Main St & Side Road'}};
  assert.ok(new URL(directionsLink(production).url).searchParams.get('destination').startsWith('123 Main St & Side Road'));
 });
+test('expired deep links can resolve while active feeds remain filtered',()=>{
+ const copy=structuredClone(data);copy.sightings[0].status='expired';
+ assert.equal(joinSightings(copy,origin,now).length,2);
+ const archived=joinSightings(copy,origin,now,{includeExpired:true}).find(r=>r.id==='sighting-0');
+ assert.equal(archived.status,'expired');assert.equal(archived.retailer.name,'Demo Columbus Retailer');
+});
