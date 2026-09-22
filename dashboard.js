@@ -3,6 +3,7 @@ import { brand, freshnessRules, confidenceLevels } from './config.js';
 import { loadDataset } from './lib/data-model.js';
 import { communities, resolveLocation, joinSightings, filterSightings } from './lib/search.js';
 import { createHuntMap } from './lib/hunt-map.js';
+import {feedback} from './lib/motion.js';
 
 const $=selector=>document.querySelector(selector);
 const form=$('#hunt-filters');
@@ -47,7 +48,7 @@ function render({refit=true}={}){
   }):[element('p','No retailers have been published yet.')]));
   if(homeScope&&homeHref&&!homeFocus.isConnected){const replacement=[...homeScope.querySelectorAll('a')].find(a=>a.getAttribute('href')===homeHref);if(replacement)replacement.focus({preventScroll:true});else{homeScope.tabIndex=-1;homeScope.focus({preventScroll:true});}}
 }
-function setView(view){$('#results-layout').dataset.view=view;$('#list-view').setAttribute('aria-pressed',String(view==='list'));$('#map-view').setAttribute('aria-pressed',String(view==='map'));if(view==='map')setTimeout(()=>map?.resize(),0);}
+function setView(view){const changed=$('#results-layout').dataset.view!==view;$('#results-layout').dataset.view=view;$('#list-view').setAttribute('aria-pressed',String(view==='list'));$('#map-view').setAttribute('aria-pressed',String(view==='map'));if(view==='map')setTimeout(()=>map?.resize(),0);if(changed)feedback($(view==='map'?'#map-panel':'#list-panel'));}
 $('#list-view').addEventListener('click',()=>setView('list'));
 $('#map-view').addEventListener('click',()=>setView('map'));
 $('#map-fallback').addEventListener('click',()=>{setView('list');$('#list-view').focus();});
