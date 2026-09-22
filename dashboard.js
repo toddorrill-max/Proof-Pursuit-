@@ -1,4 +1,4 @@
-import {findingCard, installChrome} from './lib/view.js';
+import {findingCard, installChrome, link, route} from './lib/view.js';
 import { brand, freshnessRules, confidenceLevels } from './config.js';
 import { loadDataset } from './lib/data-model.js';
 import { communities, resolveLocation, joinSightings, filterSightings } from './lib/search.js';
@@ -36,6 +36,16 @@ function render({refit=true}={}){
   $('#active-filters').textContent=active?`· ${active} active`:'';
   $('#result-count').textContent=`${rows.length} ${data.mode==='demo'?'demo ':''}${rows.length===1?'finding':'findings'} · newest verification first${origin?` · distances from ${origin.label}`:' · set a location for distances'}`;
   map?.setRows(rows,{refit});select(selectedId,{pan:refit});
+  const homeFocus=document.activeElement,homeScope=homeFocus?.closest('.home-findings,.area-links'),homeHref=homeFocus?.getAttribute('href');
+  for(const [id,type] of [['home-picks','store-pick'],['home-rare','rare-allocated']]){
+    const featured=rows.filter(row=>row.releaseType===type).slice(0,2);
+    document.getElementById(id).replaceChildren(...(featured.length?featured.map(row=>findingCard(row)): [element('p','No matching findings. Adjust your filters or check back after verified records are added.','empty')]));
+  }
+  $('#home-retailers').replaceChildren(...(data.retailers.length?data.retailers.map(retailer=>{
+    const community=data.locations.find(location=>location.id===retailer.locationId);
+    const item=element('div',undefined,'area-link');item.append(element('span',community.city,'eyebrow'),link(retailer.name,route('retailer',retailer.id)),element('small',retailer.demo?'Fictional demo · no visitable store':'View contact details and recent findings'));return item;
+  }):[element('p','No retailers have been published yet.')]));
+  if(homeScope&&homeHref&&!homeFocus.isConnected){const replacement=[...homeScope.querySelectorAll('a')].find(a=>a.getAttribute('href')===homeHref);if(replacement)replacement.focus({preventScroll:true});else{homeScope.tabIndex=-1;homeScope.focus({preventScroll:true});}}
 }
 function setView(view){$('#results-layout').dataset.view=view;$('#list-view').setAttribute('aria-pressed',String(view==='list'));$('#map-view').setAttribute('aria-pressed',String(view==='map'));if(view==='map')setTimeout(()=>map?.resize(),0);}
 $('#list-view').addEventListener('click',()=>setView('list'));
@@ -66,10 +76,10 @@ $('#locate').addEventListener('click',()=>{
   },{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
 });
 async function startData(){
-  const request=++dataRequest;data=null;rows=[];select(null);map?.setRows([]);$('#results').replaceChildren();$('#empty').hidden=true;
+  const request=++dataRequest;data=null;rows=[];for(const id of ['home-picks','home-rare','home-retailers'])document.getElementById(id).replaceChildren(element('p','Data loading. No availability claims are shown.'));select(null);map?.setRows([]);$('#results').replaceChildren();$('#empty').hidden=true;
   $('#data-error').hidden=true;$('#results').setAttribute('aria-busy','true');$('#result-count').textContent='Loading release intelligence…';
   const result=await loadDataset();if(request!==dataRequest)return;
-  if(!result.ok){$('#results').setAttribute('aria-busy','false');$('#data-error-message').textContent='Release data could not be loaded or did not pass validation. No availability is shown. Retry or contact the owner.';$('#data-error').hidden=false;$('#result-count').textContent='Release data unavailable';$('#demo-notice').textContent='Data unavailable. No availability claims are being shown.';return;}
+  if(!result.ok){$('#results').setAttribute('aria-busy','false');$('#data-error-message').textContent='Release data could not be loaded or did not pass validation. No availability is shown. Retry or contact the owner.';$('#data-error').hidden=false;$('#result-count').textContent='Release data unavailable';for(const id of ['home-picks','home-rare','home-retailers'])document.getElementById(id).replaceChildren(element('p','Data unavailable. Please retry using the control above.'));$('#demo-notice').textContent='Data unavailable. No availability claims are being shown.';return;}
   data=result.data;$('#demo-notice').textContent=data.mode==='demo'?'DEMO ONLY — Fictional retailers and availability. Pins mark community centers. Do not travel based on these examples.':'Manually maintained release intelligence — not live inventory. Check each timestamp and call before traveling.';
   for(const [selector,key,label] of [['#retailer-filter','retailers','All retailers'],['#city-filter','locations','All communities'],['#bottle-type','bottles','All types']]){
     const el=$(selector),value=el.value;el.replaceChildren();option(el,'',label);
@@ -87,7 +97,7 @@ createHuntMap({onSelect:select,onStatus:(message,failed)=>{$('#map-status').text
 setInterval(()=>{
   if(!data)return;
   const active=document.activeElement,selectId=active?.dataset.select,markerId=active?.classList.contains('hunt-marker')?active.dataset.sighting:null;
-  const findingId=active?.closest('.finding')?.dataset.sighting,href=active?.getAttribute('href'),scope=active?.closest('#selected-finding')?'#selected-finding':'#results';
+  const findingId=active?.closest('#results,#selected-finding')?active.closest('.finding')?.dataset.sighting:null,href=active?.getAttribute('href'),scope=active?.closest('#selected-finding')?'#selected-finding':'#results';
   const popupFocused=Boolean(active?.closest('.marker-choices'));
   render({refit:false});
   if(popupFocused&&!active.isConnected){$('#result-count').tabIndex=-1;$('#result-count').focus({preventScroll:true});}

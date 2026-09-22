@@ -22,6 +22,7 @@ node scripts/verify-phase2.mjs
 node scripts/verify-phase3.mjs
 node scripts/verify-browser.mjs
 node scripts/verify-phase4.mjs
+node scripts/verify-visual.mjs
 node scripts/audit-accessibility.mjs
 ```
 
@@ -35,6 +36,7 @@ Browser scripts accept an optional absolute Playwright module path as the first 
 - [Phase 2 guide](docs/PHASE-2.md): functionality, location approximation, map policy, validation and remaining limitations.
 - [Phase 3 guide](docs/PHASE-3.md): retailer/finding pages, release collections, methodology, About, and verification results.
 - [Phase 4 QA checklist](docs/PHASE-4-QA.md): audit findings, fixes, verification evidence and remaining manual work. The accessibility script needs axe-core or an absolute axe.min.js path as its second argument.
+- [Master audit and visual review](docs/VISUAL-REVIEW.md): homepage completeness, design tokens, responsive styling and review limits.
 - `pages.js`, `pages.css`, `lib/view.js`: supporting pages, shared navigation and shared finding cards.
 - `dashboard.js`, `dashboard.css`, `lib/search.js`, `lib/hunt-map.js`: dashboard and map implementation.
 - `lib/data-model.js`: safe loading, validation and freshness calculations.
@@ -52,7 +54,7 @@ This branch has not been deployed. Publish only these static website files: `ind
 
 ## Progress
 
-Phase 1 provides the validated data foundation. Phase 2 connects it to nearby search, an interactive map, filters and recent activity. Phase 3 adds the retailer directory, retailer/finding details, store-pick and rare-release views, methodology and About pages, and expanded owner guidance. Phase 4 audits the functional demo and fixes freshness, keyboard focus, map refresh, text reflow and accessibility issues. Visual/motion work and final launch checks remain later phases. Accounts, alerts, public submissions, database integration, additional metros and optional price intelligence remain deferred.
+Phase 1 provides the validated data foundation. Phase 2 connects it to nearby search, an interactive map, filters and recent activity. Phase 3 adds the retailer directory, retailer/finding details, store-pick and rare-release views, methodology and About pages, and expanded owner guidance. Phase 4 audits the functional demo and fixes freshness, keyboard focus, map refresh, text reflow and accessibility issues. The master audit and visual refinement add the remaining homepage sections and the shared barrel-house palette. Motion work and final launch checks remain later phases. Accounts, alerts, public submissions, database integration, additional metros and optional price intelligence remain deferred.
 
 ## Existing image provenance
 
