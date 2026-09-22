@@ -21,3 +21,7 @@ body{background:var(--paper)}a{color:#67421f}h1,h2{font-family:var(--font-displa
 @media(max-width:600px){.site-header{gap:.75rem}.site-header nav{gap:.1rem 1rem}.site-header nav a{font-size:.8rem}.near-me{font-size:.75rem;padding:.55rem .75rem}.intro{margin-top:1rem;padding:1.5rem 1.2rem}.intro h1{font-size:2.45rem}.field-note{display:none}.location-panel{padding:1.1rem}.location-controls{align-items:stretch}.location-controls>button:first-child{width:100%}.location-controls>span{display:none}.results-heading h2{font-size:1.55rem}.results-heading p{max-width:none}.view-switch{margin-left:auto}.view-switch button{min-width:64px}.home-findings,.area-links{grid-template-columns:1fr}.home-findings>.finding:only-child .facts{grid-template-columns:1fr 1fr}.home-findings>.finding:only-child .facts>div:nth-child(4){grid-column:1/-1}.trust{padding:1.25rem}.area-directory h2,.section-heading h2{font-size:1.5rem}.site-header .brand strong{font-size:1.2rem}}
 .intro>div{min-width:0}.intro h1,.intro .eyebrow{overflow-wrap:anywhere}
 .page-content{overflow-wrap:anywhere}
+/* Motion tokens: feedback never blocks rendering or changes geometry. */
+:root{--motion-fast:120ms;--motion-feedback:180ms;--motion-ease:ease-out}
+button,.near-me,input,select,.finding{transition:background-color var(--motion-fast) var(--motion-ease),border-color var(--motion-fast) var(--motion-ease),box-shadow var(--motion-fast) var(--motion-ease)}
+@media(prefers-reduced-motion:reduce){button,.near-me,input,select,.finding{transition:none}}
